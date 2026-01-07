@@ -1,0 +1,7 @@
+.DS_Store
+node_modules/
+dist/
+.env
+simplify_icons.py
+named_icons.txt
+*.log
