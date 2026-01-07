@@ -24,7 +24,7 @@
 
 ## Usage
 
-Browse and download icons online at [aiko.miaoyan.app](https://aiko.miaoyan.app). From there, you can:
+Browse and download icons online at [icon.miaoyan.app](https://icon.miaoyan.app). From there, you can:
 
 - Search for icons by name or category.
 - Customize colors on the fly.
