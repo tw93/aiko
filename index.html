@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aiko</title>
+  <link rel="icon" href="lollipop.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f7f8;
+      --bg-nav: rgba(255, 255, 255, 0.75);
+      --text-main: #0d0d0d;
+      --text-sub: #676767;
+      --accent: #10a37f;
+      --border-color: #e5e5e5;
+      --card-bg: #ffffff;
+      --card-hover: #f7f7f8;
+      --navbar-height: 64px;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0d0d0d;
+      --bg-secondary: #1a1a1a;
+      --bg-nav: rgba(13, 13, 13, 0.75);
+      --text-main: #ececf1;
+      --text-sub: #b4b4b4;
+      --accent: #10a37f;
+      --border-color: #262626;
+      --card-bg: #0d0d0d;
+      --card-hover: #1a1a1a;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      overflow-x: hidden;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--navbar-height);
+      background: var(--bg-primary);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      transition: all 0.2s ease;
+      /* Border removed */
+    }
+
+    [data-theme="dark"] .navbar {
+      border: none;
+    }
+
+    .nav-left {
+      width: auto;
+      /* Allow content to determine width */
+      min-width: 200px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-right: 24px;
+    }
+
+    .brand {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+    }
+
+    .brand img {
+      width: 32px;
+      height: 32px;
+      transition: transform 0.2s ease;
+    }
+
+    .brand:hover img {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .subtitle {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-sub);
+      margin-left: 20px;
+      opacity: 0.7;
+      border-left: 1px solid var(--border-color);
+      padding-left: 20px;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+    }
+
+    footer {
+      padding: 4rem 3rem 2rem;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 12px;
+      opacity: 0.6;
+      font-weight: 300;
+    }
+
+    @media (max-width: 900px) {
+      .subtitle {
+        display: none;
+      }
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 540px;
+      /* Reduced search bar width */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      /* Push to right */
+      margin-right: 24px;
+      /* Space from toggle */
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-sub);
+      pointer-events: none;
+      width: 18px;
+      height: 18px;
+    }
+
+    .nav-search {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border-radius: 99px;
+      border: none;
+      /* Border removed */
+      background: var(--bg-secondary);
+      color: var(--text-main);
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+
+
+    .nav-search:focus {
+      outline: none;
+      background: var(--bg-primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      /* Softer shadow on focus */
+      transform: translateY(-1px);
+    }
+
+    .clear-search {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-sub);
+      cursor: pointer;
+      display: none;
+      padding: 4px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .clear-search:hover {
+      background: var(--border-color);
+      color: var(--text-main);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: none;
+      /* Don't expand */
+      justify-content: flex-end;
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      /* Border removed */
+      color: var(--text-main);
+      padding: 8px;
+      border-radius: 50%;
+      /* Fully rounded for cleaner look */
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-button:hover {
+      background: var(--bg-secondary);
+      /* No border color change as border is gone */
+    }
+
+    /* Grouped Sections */
+    main {
+      padding: calc(var(--navbar-height) + 1rem) 3rem 4rem;
+      /* Reduced padding */
+      /* Adjust padding for fixed navbar */
+      max-width: 1600px;
+      /* Optional constraint for ultra-wide screens */
+      margin: 0 auto;
+    }
+
+    .category-section {
+      margin-bottom: 3.5rem;
+    }
+
+    .category-header {
+      position: sticky;
+      top: var(--navbar-height);
+      background: var(--bg-primary);
+      padding: 1rem 0 0.5rem;
+      margin-top: -1rem;
+      margin-bottom: 1rem;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .category-header.sticky {
+      backdrop-filter: blur(8px);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+    }
+
+    [data-theme="dark"] .category-header.sticky {
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .category-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      text-transform: capitalize;
+      margin-left: 4px;
+    }
+
+    .category-count {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      background: var(--card-hover);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 12px;
+    }
+
+    .icon-card {
+      aspect-ratio: 1;
+      background: var(--bg-primary);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Dark mode border adjustment - Removed */
+    /* [data-theme="dark"] .icon-card {
+      border-color: rgba(255, 255, 255, 0.1);
+    } */
+
+    .icon-card:hover {
+      background: var(--bg-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .icon-card.active {
+      background: var(--bg-primary);
+      box-shadow: 0 0 0 2px var(--accent), 0 6px 16px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+      z-index: 2;
+    }
+
+    /* Dark mode shadow adjustments */
+    [data-theme="dark"] .icon-card {
+      background: var(--bg-primary);
+      border: none;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="dark"] .icon-card:hover {
+      background: var(--bg-primary);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] .icon-card.active {
+      background: var(--bg-primary);
+      box-shadow: 0 0 0 2px var(--accent), 0 3px 8px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+    }
+
+    [data-theme="dark"] .popover {
+      background: #161616;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.8);
+    }
+
+    .icon-wrapper {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 8px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .icon-card:hover .icon-wrapper {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .icon-card svg {
+      width: 32px;
+      height: 32px;
+      fill: currentColor;
+    }
+
+    .icon-name {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-main);
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .icon-id {
+      display: none;
+    }
+
+    /* Toast Styling */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #202123;
+      color: #ffffff;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      transform: translateY(100px);
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+    }
+
+    #sprites-container {
+      display: none;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 6rem;
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0 16px;
+        flex-wrap: wrap;
+        /* Allow search to drop down */
+        height: auto;
+        /* Allow height to grow */
+      }
+
+      .nav-left {
+        flex: 1;
+        /* Take available space */
+      }
+
+      .brand {
+        font-size: 18px;
+      }
+
+      .brand svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .search-container {
+        position: static;
+        transform: none;
+        order: 3;
+        width: 100%;
+        margin-top: 12px;
+        margin-left: 0;
+        /* Reset desktop auto margin */
+        margin-right: 0;
+        /* Reset desktop margin */
+        padding-bottom: 12px;
+      }
+
+      .nav-right {
+        flex: none;
+      }
+
+      main {
+        padding: calc(var(--navbar-height) + 1rem) 1rem 1rem;
+      }
+
+      .category-header {
+        padding: 1rem 0 0.75rem;
+        margin-top: -1rem;
+      }
+    }
+
+    /* Popover Styling */
+    .popover {
+      position: absolute;
+      background: var(--bg-primary);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      border-radius: 16px;
+      padding: 16px;
+      width: 240px;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    [data-theme="dark"] .popover {
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+    }
+
+    .popover.show {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Arrow for popover - Removed border, just bg */
+    .popover::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: calc(50% + var(--arrow-offset, 0px));
+      transform: translateX(-50%) rotate(45deg);
+      width: 12px;
+      height: 12px;
+      background: var(--bg-primary);
+      /* border-left: 1px solid var(--border-color); */
+      /* border-top: 1px solid var(--border-color); */
+    }
+
+    /* Header Removed */
+
+    .popover-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .popover-btn {
+      flex: 1;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--bg-secondary);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 4px;
+    }
+
+    .popover-btn svg {
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    .popover-btn:hover {
+      background: var(--border-color);
+    }
+
+    .color-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(128, 128, 128, 0.3);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 0;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.1);
+      border-color: rgba(128, 128, 128, 0.5);
+    }
+
+    .color-btn.active {
+      transform: scale(1.1);
+      border-color: var(--accent);
+      border-width: 3px;
+    }
+
+    /* Reuse Color Options styles but scale down slightly */
+    /* Reuse Color Options styles but scale down slightly */
+    .popover .color-options {
+      gap: 8px;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      display: flex;
+      width: 100%;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    .popover .color-btn,
+    .popover .color-input-wrapper {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(128, 128, 128, 0.3);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .popover .color-btn:hover {
+      border-color: rgba(128, 128, 128, 0.5);
+    }
+
+    .popover .color-btn.active {
+      border-color: var(--accent);
+      border-width: 3px;
+    }
+
+    /* Fix input inside wrapper to be full size */
+    .popover .color-input-wrapper input[type="color"] {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      padding: 0;
+      margin: 0;
+      border: none;
+      cursor: pointer;
+      opacity: 0;
+      /* Hide default UI but keep clickable */
+    }
+
+    /* Style the wrapper itself to look like a button */
+    .popover .color-input-wrapper {
+      background: linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet);
+      /* Rainbow for custom */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="nav-left">
+      <div class="brand">
+        <img src="lollipop.svg" alt="Aiko">
+        Aiko
+        <span class="subtitle">Refined icons for the AI era.</span>
+      </div>
+    </div>
+
+    <div class="search-container">
+      <div class="search-wrapper">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search" class="nav-search" placeholder="Search icons, categories or tags...">
+        <div id="clear-search" class="clear-search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <button id="theme-toggle" class="icon-button" title="Toggle Theme">
+        <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <!-- Grouped content injected here -->
+  </main>
+
+  <div id="icon-popover" class="popover">
+    <!-- Header Removed -->
+    <div class="color-options" id="popover-color-options">
+      <button class="color-btn active" style="background: currentColor;" data-color="currentColor"
+        title="Current Color"></button>
+      <button class="color-btn" style="background: #FFFFFF;" data-color="#FFFFFF" title="White"></button>
+      <button class="color-btn" style="background: #10a37f;" data-color="#10a37f" title="Brand Green"></button>
+      <button class="color-btn" style="background: #3B82F6;" data-color="#3B82F6" title="Blue"></button>
+      <div class="color-input-wrapper" title="Custom Color">
+        <input type="color" id="popover-custom-color">
+      </div>
+    </div>
+
+    <div class="popover-actions">
+      <button class="popover-btn btn-copy" id="popover-btn-copy">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span>复制</span>
+      </button>
+      <button class="popover-btn btn-svg" id="popover-btn-svg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>SVG</span>
+      </button>
+      <button class="popover-btn btn-png" id="popover-btn-png">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>PNG</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+      stroke-linecap="round" stroke-linejoin="round" style="color: #10a37f">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    Icon code copied
+  </div>
+
+  <footer id="footer">
+    Inspired by OpenAI's original icon assets.
+  </footer>
+
+  <div id="sprites-container"></div>
+
+  <script>
+    let allIcons = [];
+    let searchTimeout;
+
+    const iconMetadata = {
+      // UI
+      "f899a8": { name: "ai-model", category: "UI", tags: ["ai"] },
+      "14ac53": { name: "arrow-down", category: "UI", tags: ["arrow"] },
+      "ac89a7": { name: "arrow-down", category: "UI", tags: ["arrow", "bottom", "down"] },
+      "28beb5": { name: "arrow-left", category: "UI", tags: ["arrow"] },
+      "8ee2e9": { name: "arrow-left", category: "UI", tags: ["arrow", "back", "left"] },
+      "546a9a": { name: "arrow-left-s", category: "UI", tags: ["arrow"] },
+      "6eb6ca": { name: "arrow-left-s", category: "UI", tags: ["arrow", "prev", "left"] },
+      "0155b9": { name: "arrow-right", category: "UI", tags: ["arrow"] },
+      "5922e2": { name: "arrow-right", category: "UI", tags: ["arrow", "next", "right"] },
+      "f095f1": { name: "arrow-right-circle", category: "UI", tags: ["arrow"] },
+      "40cad6": { name: "arrow-right-s", category: "UI", tags: ["arrow"] },
+      "39a255": { name: "arrow-right-s", category: "UI", tags: ["arrow"] },
+      "b140e7": { name: "arrow-right-s", category: "UI", tags: ["arrow", "next", "right"] },
+      "3d94d0": { name: "arrow-right-up", category: "UI", tags: ["arrow", "share", "external"] },
+      "986bec": { name: "arrow-right-up", category: "UI", tags: ["arrow", "share", "external"] },
+      "01bab7": { name: "arrow-up", category: "UI", tags: ["arrow"] },
+      "9779e8": { name: "arrow-up", category: "UI", tags: ["arrow", "top", "up"] },
+      "43e704": { name: "arrow-up-s", category: "UI", tags: ["arrow"] },
+      "3df56a": { name: "bookmark", category: "UI", tags: ["bookmark", "save", "star"] },
+      "6d5810": { name: "bookmark", category: "UI", tags: ["bookmark"] },
+      "ac6d36": { name: "brush", category: "UI", tags: ["brush"] },
+      "111434": { name: "chevron-down", category: "UI", tags: ["chevron"] },
+      "070314": { name: "chevron-up", category: "UI", tags: ["chevron"] },
+      "1a3695": { name: "download", category: "UI", tags: ["download", "save", "fetch"] },
+      "ebc49a": { name: "edit", category: "UI", tags: ["edit", "clipboard", "write"] },
+      "bdfbba": { name: "edit", category: "UI", tags: ["edit", "pencil", "write", "document"] },
+      "62b328": { name: "eraser", category: "UI", tags: ["eraser"] },
+      "7ef0de": { name: "file-download", category: "UI", tags: ["file"] },
+      "6795af": { name: "file-list", category: "UI", tags: ["file"] },
+      "40114f": { name: "focus", category: "UI", tags: ["focus"] },
+      "4d94ab": { name: "folder-open", category: "UI", tags: ["folder"] },
+      "03424d": { name: "frame", category: "UI", tags: ["frame"] },
+      "2e54eb": { name: "grid", category: "UI", tags: ["layout"] },
+      "3be151": { name: "hammer", category: "UI", tags: ["hammer"] },
+      "29a5ec": { name: "history", category: "UI", tags: ["history"] },
+      "53e928": { name: "home", category: "UI", tags: ["home"] },
+      "6deb96": { name: "link", category: "UI", tags: ["external"] },
+      "06188d": { name: "link", category: "UI", tags: ["external"] },
+      "6fef0e": { name: "link", category: "UI", tags: ["link", "share", "external"] },
+      "fd4904": { name: "link", category: "UI", tags: ["external"] },
+      "c12fa6": { name: "link", category: "UI", tags: ["link", "chain", "connect"] },
+      "3465a6": { name: "link-broken", category: "UI", tags: ["link"] },
+      "ed328f": { name: "link-chain", category: "UI", tags: ["link", "chain"] },
+      "11e9a6": { name: "link-m", category: "UI", tags: ["link"] },
+      "444041": { name: "link-m", category: "UI", tags: ["link"] },
+      "148dc9": { name: "link-unlink-m", category: "UI", tags: ["link"] },
+      "786e23": { name: "logout-box", category: "UI", tags: ["logout"] },
+      "aba6eb": { name: "magic", category: "UI", tags: ["magic"] },
+      "ee3fea": { name: "magic", category: "UI", tags: ["magic"] },
+      "7a0ff2": { name: "magic", category: "UI", tags: ["magic"] },
+      "ac4202": { name: "magic", category: "UI", tags: ["magic", "ai", "sparkles"] },
+      "102c34": { name: "magic", category: "UI", tags: ["magic"] },
+      "3b67f2": { name: "magic", category: "UI", tags: ["magic"] },
+      "53a0d8": { name: "magic", category: "UI", tags: ["magic"] },
+      "fa90cf": { name: "magic-wand", category: "UI", tags: ["magic"] },
+      "1ca0f1": { name: "magic-wand", category: "UI", tags: ["magic"] },
+      "ee0f3c": { name: "mail", category: "UI", tags: ["mail"] },
+      "5ed5de": { name: "mail", category: "UI", tags: ["mail"] },
+      "6b0d8c": { name: "mail-open", category: "UI", tags: ["mail"] },
+      "324919": { name: "menu", category: "UI", tags: ["menu"] },
+      "38e54b": { name: "menu", category: "UI", tags: ["menu", "list", "hamburger"] },
+      "deeed5": { name: "menu", category: "UI", tags: ["menu", "hamburger", "list"] },
+      "8138f8": { name: "menu-fold", category: "UI", tags: ["menu"] },
+      "984817": { name: "menu-status", category: "UI", tags: ["menu", "status", "indicator"] },
+      "a13852": { name: "menu-unfold", category: "UI", tags: ["menu"] },
+      "7d8cba": { name: "minimize", category: "UI", tags: ["resize", "layout"] },
+      "2a29bc": { name: "more", category: "UI", tags: ["more"] },
+      "dc4375": { name: "more", category: "UI", tags: ["more", "ellipsis", "options"] },
+      "c158a9": { name: "openai-logo", category: "UI", tags: ["openai", "logo", "ai", "brand"] },
+      "dcfd9d": { name: "palette", category: "UI", tags: ["palette", "paint", "color", "design"] },
+      "f64f60": { name: "pencil", category: "UI", tags: ["pencil"] },
+      "308fea": { name: "pencil", category: "UI", tags: ["pencil"] },
+      "6d87e1": { name: "pencil", category: "UI", tags: ["edit", "rename", "pencil"] },
+      "28a8a0": { name: "refresh", category: "UI", tags: ["refresh"] },
+      "917f75": { name: "refresh", category: "UI", tags: ["refresh", "reload", "sync"] },
+      "97a688": { name: "refresh", category: "UI", tags: ["refresh", "sync", "reload"] },
+      "9928c1": { name: "refresh", category: "UI", tags: ["refresh", "sync", "reload"] },
+      "ec66f0": { name: "refresh-cw", category: "UI", tags: ["refresh", "sync", "reload"] },
+      "dd0e68": { name: "reply", category: "UI", tags: ["reply", "back", "arrow"] },
+      "29e159": { name: "restart", category: "UI", tags: ["restart"] },
+      "64bc39": { name: "robot", category: "UI", tags: ["robot"] },
+      "dace10": { name: "robot", category: "UI", tags: ["robot"] },
+      "f300da": { name: "robot", category: "UI", tags: ["robot"] },
+      "1685a9": { name: "robot", category: "UI", tags: ["robot"] },
+      "1ff328": { name: "robot-head", category: "UI", tags: ["robot"] },
+      "07d304": { name: "scissors", category: "UI", tags: ["scissors"] },
+      "5f66c3": { name: "settings-wrench", category: "UI", tags: ["settings"] },
+      "11c67b": { name: "share", category: "UI", tags: ["share"] },
+      "304883": { name: "share-box", category: "UI", tags: ["share"] },
+      "75d0c6": { name: "share-forward", category: "UI", tags: ["share"] },
+      "155a34": { name: "sort-asc", category: "UI", tags: ["sort"] },
+      "f734b8": { name: "sparkle", category: "UI", tags: ["sparkle"] },
+      "7ad2ce": { name: "sparkles", category: "UI", tags: ["magic", "ai", "sparkles"] },
+      "56c88b": { name: "sparkles", category: "UI", tags: ["sparkles"] },
+      "665fb5": { name: "sparkles", category: "UI", tags: ["sparkles"] },
+      "ee1f3e": { name: "sparkles", category: "UI", tags: ["sparkles"] },
+      "f19d6a": { name: "sparkles", category: "UI", tags: ["sparkles"] },
+      "fe66e1": { name: "sparkles", category: "UI", tags: ["sparkles"] },
+      "fff852": { name: "sparkles", category: "UI", tags: ["sparkles"] },
+      "95386c": { name: "sparkles", category: "UI", tags: ["sparkles"] },
+      "e353bf": { name: "split", category: "UI", tags: ["layout", "split", "view"] },
+      "ec1eeb": { name: "split", category: "UI", tags: ["layout", "split", "view"] },
+      "f6c722": { name: "star", category: "UI", tags: ["star"] },
+      "1c217a": { name: "star", category: "UI", tags: ["star"] },
+      "284217": { name: "star-half", category: "UI", tags: ["star"] },
+      "fa3e28": { name: "star-s", category: "UI", tags: ["star"] },
+      "fefa27": { name: "star-s", category: "UI", tags: ["star"] },
+      "fe2f0f": { name: "star-smile", category: "UI", tags: ["star"] },
+      "974afd": { name: "time", category: "UI", tags: ["time", "clock", "history"] },
+      "fa1dbd": { name: "tools", category: "UI", tags: ["tools"] },
+      "3ad098": { name: "tools", category: "UI", tags: ["tools"] },
+      // Media
+      "77cde5": { name: "Icon 77cde5", category: "Media", tags: ["Icon 77cde5"] },
+      "cdfe73": { name: "Icon cdfe73", category: "Media", tags: ["Icon cdfe73"] },
+      "1fa93b": { name: "book-read", category: "Media", tags: ["book"] },
+      "edbcb1": { name: "briefcase", category: "Media", tags: ["briefcase"] },
+      "5cb4b0": { name: "briefcase", category: "Media", tags: ["briefcase"] },
+      "06ac52": { name: "camera", category: "Media", tags: ["camera"] },
+      "61861c": { name: "camera-off", category: "Media", tags: ["camera"] },
+      "ece952": { name: "character-symbol", category: "Media", tags: ["text", "character", "symbol"] },
+      "975ff3": { name: "chat-voice", category: "Media", tags: ["chat"] },
+      "1df48f": { name: "clipboard", category: "Media", tags: ["clipboard"] },
+      "f7f872": { name: "file", category: "Media", tags: ["file"] },
+      "0623c1": { name: "file-copy", category: "Media", tags: ["file"] },
+      "cc779d": { name: "file-copy", category: "Media", tags: ["copy", "clipboard", "duplicate"] },
+      "a18c10": { name: "file-excel", category: "Media", tags: ["file"] },
+      "973008": { name: "file-hwp", category: "Media", tags: ["file"] },
+      "b9ef21": { name: "file-image", category: "Media", tags: ["file"] },
+      "81b44f": { name: "file-pdf", category: "Media", tags: ["file"] },
+      "af461a": { name: "file-ppt", category: "Media", tags: ["file"] },
+      "99ca6a": { name: "file-shred", category: "Media", tags: ["file"] },
+      "eef637": { name: "file-text", category: "Media", tags: ["file"] },
+      "48c914": { name: "file-text", category: "Media", tags: ["file"] },
+      "9efea5": { name: "file-word", category: "Media", tags: ["file"] },
+      "668c50": { name: "file-zip", category: "Media", tags: ["file"] },
+      "f8aa74": { name: "folder", category: "Media", tags: ["folder"] },
+      "3ee541": { name: "folder", category: "Media", tags: ["folder"] },
+      "608c49": { name: "folder-add", category: "Media", tags: ["folder"] },
+      "b132c0": { name: "folder-music", category: "Media", tags: ["folder"] },
+      "172f95": { name: "image", category: "Media", tags: ["image"] },
+      "106fb0": { name: "mic", category: "Media", tags: ["mic"] },
+      "29f921": { name: "mic", category: "Media", tags: ["mic"] },
+      "0a459a": { name: "mickey", category: "Media", tags: ["mickey"] },
+      "680a3c": { name: "movie", category: "Media", tags: ["movie"] },
+      "1d9a91": { name: "notification", category: "Media", tags: ["notification"] },
+      "c6470e": { name: "notification-badge", category: "Media", tags: ["notification"] },
+      "0c21a8": { name: "pause", category: "Media", tags: ["pause"] },
+      "4bb189": { name: "play", category: "Media", tags: ["play"] },
+      "f0ee98": { name: "play-circle", category: "Media", tags: ["play"] },
+      "0f21eb": { name: "play-circle", category: "Media", tags: ["play"] },
+      "3cf414": { name: "play-circle", category: "Media", tags: ["play", "video", "start"] },
+      "402281": { name: "play-circle", category: "Media", tags: ["play", "video", "start"] },
+      "0f07fb": { name: "play-mini", category: "Media", tags: ["play"] },
+      "dc11f1": { name: "radio-button", category: "Media", tags: ["radio", "selected", "option"] },
+      "1680fc": { name: "radio-button", category: "Media", tags: ["radio"] },
+      "77bc5f": { name: "save", category: "Media", tags: ["save"] },
+      "10ff38": { name: "speed-mini", category: "Media", tags: ["speed"] },
+      "08d779": { name: "stop-circle", category: "Media", tags: ["stop"] },
+      "6dc452": { name: "video", category: "Media", tags: ["video"] },
+      "705604": { name: "video", category: "Media", tags: ["video", "camera", "live"] },
+      "dc94ab": { name: "video-camera", category: "Media", tags: ["video", "camera", "camcorder", "record"] },
+      "5fc1e3": { name: "volume-mute", category: "Media", tags: ["volume"] },
+      "0de897": { name: "volume-up", category: "Media", tags: ["volume"] },
+      "f1b997": { name: "volume-vibrate", category: "Media", tags: ["volume"] },
+      // Business
+      "16cb28": { name: "bag", category: "Business", tags: ["shopping"] },
+      "e85a81": { name: "card", category: "Business", tags: ["bank"] },
+      "59f270": { name: "card", category: "Business", tags: ["bank"] },
+      "e5c54e": { name: "cart", category: "Business", tags: ["shopping"] },
+      "5907b1": { name: "cart", category: "Business", tags: ["shopping"] },
+      "594bd3": { name: "clean", category: "Business", tags: ["money"] },
+      "d03bce": { name: "coin", category: "Business", tags: ["hand"] },
+      "5bb75d": { name: "coupon", category: "Business", tags: ["coupon"] },
+      "58efbb": { name: "gift", category: "Business", tags: ["gift"] },
+      "870c9a": { name: "id", category: "Business", tags: ["id"] },
+      "5bce33": { name: "store", category: "Business", tags: ["store"] },
+      "13c505": { name: "tag", category: "Business", tags: ["price"] },
+      "57c721": { name: "trophy", category: "Business", tags: ["trophy"] },
+      // Social
+      "30127c": { name: "add", category: "Social", tags: ["add"] },
+      "f5bdae": { name: "add-box", category: "Social", tags: ["add"] },
+      "744c94": { name: "add-circle", category: "Social", tags: ["add"] },
+      "5e46e0": { name: "alarm", category: "Social", tags: ["alarm"] },
+      "7b8fbf": { name: "alarm-warning", category: "Social", tags: ["alarm"] },
+      "018b23": { name: "bar-chart", category: "Social", tags: ["bar"] },
+      "1b87bb": { name: "box", category: "Social", tags: ["box"] },
+      "0b7e8d": { name: "braces", category: "Social", tags: ["braces"] },
+      "03583c": { name: "bubble-chart", category: "Social", tags: ["bubble"] },
+      "b6e0e5": { name: "bug", category: "Social", tags: ["bug"] },
+      "51d29d": { name: "bug", category: "Social", tags: ["bug"] },
+      "5e6658": { name: "calendar", category: "Social", tags: ["calendar"] },
+      "343d0f": { name: "car", category: "Social", tags: ["car"] },
+      "412b85": { name: "character-recognition", category: "Social", tags: ["character"] },
+      "4505ef": { name: "chat", category: "Social", tags: ["chat"] },
+      "eed976": { name: "chat", category: "Social", tags: ["chat"] },
+      "003104": { name: "chat-bubble", category: "Social", tags: ["chat"] },
+      "5979fc": { name: "chat-check", category: "Social", tags: ["chat"] },
+      "823ad8": { name: "chat-quote", category: "Social", tags: ["chat"] },
+      "730668": { name: "chat-smile", category: "Social", tags: ["chat"] },
+      "249d41": { name: "check", category: "Social", tags: ["check"] },
+      "787580": { name: "check", category: "Social", tags: ["check", "done", "success"] },
+      "08238c": { name: "checkbox-blank-circle", category: "Social", tags: ["checkbox"] },
+      "87fa24": { name: "checkbox-blank-circle", category: "Social", tags: ["circle", "empty"] },
+      "efede7": { name: "checkbox-circle", category: "Social", tags: ["checkbox"] },
+      "b97717": { name: "circle", category: "Social", tags: ["circle", "shape"] },
+      "d0ed6d": { name: "circle", category: "Social", tags: ["circle", "shape"] },
+      "2120a0": { name: "close", category: "Social", tags: ["close"] },
+      "23ce94": { name: "close", category: "Social", tags: ["close", "cancel", "x"] },
+      "85f94b": { name: "close", category: "Social", tags: ["close", "remove", "cancel"] },
+      "9254a2": { name: "code", category: "Social", tags: ["code"] },
+      "00f12a": { name: "code-box", category: "Social", tags: ["code"] },
+      "1bf527": { name: "community", category: "Social", tags: ["community"] },
+      "481f90": { name: "compass", category: "Social", tags: ["compass"] },
+      "54bf3e": { name: "cup", category: "Social", tags: ["cup"] },
+      "30bb7e": { name: "cursor", category: "Social", tags: ["cursor"] },
+      "e01b66": { name: "cursor", category: "Social", tags: ["cursor", "pointer", "selection"] },
+      "4a920d": { name: "drag-move", category: "Social", tags: ["drag"] },
+      "a5ec30": { name: "equalizer", category: "Social", tags: ["equalizer"] },
+      "72fbec": { name: "error-warning", category: "Social", tags: ["error"] },
+      "bde0a5": { name: "expand", category: "Social", tags: ["expand", "resize", "aspect-ratio"] },
+      "630ca2": { name: "filter", category: "Social", tags: ["filter"] },
+      "2126ae": { name: "fingerprint", category: "Social", tags: ["fingerprint"] },
+      "68993d": { name: "flag", category: "Social", tags: ["flag"] },
+      "1ca9b1": { name: "flash", category: "Social", tags: ["flash"] },
+      "1c992a": { name: "flashlight", category: "Social", tags: ["flashlight"] },
+      "a19261": { name: "flashlight", category: "Social", tags: ["flashlight"] },
+      "539c98": { name: "flask", category: "Social", tags: ["flask"] },
+      "19c64a": { name: "fullscreen", category: "Social", tags: ["fullscreen"] },
+      "1805fd": { name: "git-branch", category: "Social", tags: ["git"] },
+      "4e1aea": { name: "global", category: "Social", tags: ["global"] },
+      "12dd20": { name: "group", category: "Social", tags: ["group"] },
+      "4e7137": { name: "hand-pointing", category: "Social", tags: ["hand"] },
+      "2d1e0a": { name: "hand-up", category: "Social", tags: ["hand"] },
+      "9d9a00": { name: "headset", category: "Social", tags: ["headset", "audio", "support"] },
+      "34128b": { name: "heart", category: "Social", tags: ["heart"] },
+      "69c970": { name: "inbox", category: "Social", tags: ["inbox"] },
+      "5d4173": { name: "info", category: "Social", tags: ["info"] },
+      "73510e": { name: "information", category: "Social", tags: ["information"] },
+      "3c5754": { name: "lightbulb", category: "Social", tags: ["lightbulb", "idea", "suggestion"] },
+      "5d1739": { name: "lightbulb", category: "Social", tags: ["lightbulb"] },
+      "bd0092": { name: "lightbulb", category: "Social", tags: ["lightbulb", "idea", "suggestion"] },
+      "3e498c": { name: "lightbulb-off", category: "Social", tags: ["disabled", "no-idea", "off"] },
+      "d436f0": { name: "lightbulb-off", category: "Social", tags: ["disabled", "no-idea", "off"] },
+      "e862af": { name: "lightbulb-off", category: "Social", tags: ["disabled", "no-idea", "off"] },
+      "8f3ef6": { name: "line-chart", category: "Social", tags: ["trend", "data", "chart"] },
+      "681078": { name: "map-pin", category: "Social", tags: ["map"] },
+      "9f891f": { name: "map-pin", category: "Social", tags: ["location", "map", "pin"] },
+      "55180d": { name: "medal", category: "Social", tags: ["medal"] },
+      "99fdcc": { name: "message", category: "Social", tags: ["message"] },
+      "440bf3": { name: "message", category: "Social", tags: ["message"] },
+      "62f600": { name: "message", category: "Social", tags: ["message"] },
+      "eee0f5": { name: "message", category: "Social", tags: ["message"] },
+      "715504": { name: "message", category: "Social", tags: ["message"] },
+      "1f5ad7": { name: "minimize", category: "Social", tags: ["fullscreen"] },
+      "0546e0": { name: "minus-circle", category: "Social", tags: ["minus"] },
+      "0e5c42": { name: "paper-plane", category: "Social", tags: ["paper"] },
+      "cc387d": { name: "parking", category: "Social", tags: ["parking"] },
+      "961be9": { name: "printer", category: "Social", tags: ["print", "paper", "output"] },
+      "a88f67": { name: "pulse", category: "Social", tags: ["pulse"] },
+      "5d3542": { name: "question", category: "Social", tags: ["question"] },
+      "0ba700": { name: "reply", category: "Social", tags: ["reply"] },
+      "00da8b": { name: "scale", category: "Social", tags: ["scale"] },
+      "6e8e3f": { name: "search", category: "Social", tags: ["search"] },
+      "33b585": { name: "search", category: "Social", tags: ["search", "find", "magnifier"] },
+      "f6d0e2": { name: "search-eye", category: "Social", tags: ["search"] },
+      "edfc2f": { name: "selection-multiple", category: "Social", tags: ["select", "multi", "cursor"] },
+      "f735f6": { name: "send-plane", category: "Social", tags: ["send"] },
+      "0aed53": { name: "send-plane", category: "Social", tags: ["send"] },
+      "6eb585": { name: "send-plane", category: "Social", tags: ["send"] },
+      "8072f6": { name: "send-plane", category: "Social", tags: ["send", "submit", "chat"] },
+      "5d12d5": { name: "service", category: "Social", tags: ["service"] },
+      "0d48c6": { name: "speech-quote", category: "Social", tags: ["speech"] },
+      "0f510f": { name: "subtract", category: "Social", tags: ["subtract"] },
+      "7a26f6": { name: "switch-toggle", category: "Social", tags: ["toggle", "switch", "on"] },
+      "caa797": { name: "t-shirt", category: "Social", tags: ["t"] },
+      "0350ab": { name: "team", category: "Social", tags: ["team"] },
+      "6be74c": { name: "thumb-down", category: "Social", tags: ["thumb"] },
+      "6be2f1": { name: "thumb-up", category: "Social", tags: ["thumb"] },
+      "24f206": { name: "time", category: "Social", tags: ["time"] },
+      "74c13e": { name: "timer", category: "Social", tags: ["timer"] },
+      "3a5c87": { name: "toggle", category: "Social", tags: ["toggle", "switch"] },
+      "e29fb0": { name: "trend-up", category: "Social", tags: ["trend", "stock", "chart", "growth"] },
+      "a04f47": { name: "undo", category: "Social", tags: ["undo", "back", "reverse"] },
+      "d7281f": { name: "walk", category: "Social", tags: ["walk"] },
+      "bc9381": { name: "warning", category: "Social", tags: ["warning", "alert", "error", "triangle"] },
+      "266724": { name: "zoom-in", category: "Social", tags: ["zoom"] },
+      // System
+      "5d7f10": { name: "advertisement", category: "System", tags: ["advertisement"] },
+      "81d4ea": { name: "attachment", category: "System", tags: ["attachment"] },
+      "6335c3": { name: "battery", category: "System", tags: ["battery"] },
+      "658007": { name: "bluetooth", category: "System", tags: ["bluetooth"] },
+      "334d9b": { name: "close-circle", category: "System", tags: ["close", "delete"] },
+      "002232": { name: "close-circle", category: "System", tags: ["close", "delete", "remove"] },
+      "1af12c": { name: "computer", category: "System", tags: ["computer"] },
+      "8ea31d": { name: "database", category: "System", tags: ["database"] },
+      "61ee0c": { name: "delete-bin", category: "System", tags: ["delete"] },
+      "fc336f": { name: "delete-bin", category: "System", tags: ["delete"] },
+      "0cbba4": { name: "delete-bin", category: "System", tags: ["delete"] },
+      "13baa5": { name: "emotion-happy", category: "System", tags: ["emotion"] },
+      "eeea71": { name: "emotion-smile", category: "System", tags: ["emotion"] },
+      "beb129": { name: "folder-lock", category: "System", tags: ["folder"] },
+      "8c41f1": { name: "folder-shield", category: "System", tags: ["folder"] },
+      "6b1f51": { name: "folder-user", category: "System", tags: ["folder"] },
+      "1f2234": { name: "headphone", category: "System", tags: ["headphone"] },
+      "23d2ff": { name: "key", category: "System", tags: ["key"] },
+      "13322a": { name: "key", category: "System", tags: ["key"] },
+      "1bb519": { name: "lock", category: "System", tags: ["lock"] },
+      "817971": { name: "lock", category: "System", tags: ["lock", "private", "secure"] },
+      "83d212": { name: "lock-unlock", category: "System", tags: ["lock"] },
+      "0c7b3e": { name: "robot-face", category: "System", tags: ["ai", "bot", "robot"] },
+      "8ed617": { name: "server", category: "System", tags: ["server"] },
+      "995f68": { name: "settings", category: "System", tags: ["settings", "cog"] },
+      "23f3be": { name: "settings", category: "System", tags: ["settings"] },
+      "44c6db": { name: "settings", category: "System", tags: ["settings"] },
+      "422971": { name: "settings", category: "System", tags: ["settings"] },
+      "a18104": { name: "settings", category: "System", tags: ["settings", "gear", "config"] },
+      "e91ac9": { name: "shield-badge", category: "System", tags: ["shield", "badge"] },
+      "452c6a": { name: "shield-check", category: "System", tags: ["shield"] },
+      "e13340": { name: "shield-secure", category: "System", tags: ["shield", "security", "safe"] },
+      "571451": { name: "shield-star", category: "System", tags: ["shield"] },
+      "327631": { name: "shield-user", category: "System", tags: ["shield"] },
+      "115ad0": { name: "user", category: "System", tags: ["user"] },
+      "fed502": { name: "user", category: "System", tags: ["user"] },
+      "0a0a1b": { name: "user-add", category: "System", tags: ["user"] },
+      "99561c": { name: "user-circle", category: "System", tags: ["profile", "user", "account"] },
+      "184473": { name: "user-follow", category: "System", tags: ["user"] },
+      "427dd9": { name: "user-settings", category: "System", tags: ["user"] },
+      "644ce5": { name: "wifi", category: "System", tags: ["wifi"] },
+      // Other
+      "1a24f4": { name: "Icon 1a24f4", category: "Other", tags: ["Icon 1a24f4"] },
+      "1f3bb2": { name: "Icon 1f3bb2", category: "Other", tags: ["Icon 1f3bb2"] },
+      "29679e": { name: "Icon 29679e", category: "Other", tags: ["Icon 29679e"] },
+      "350877": { name: "Icon 350877", category: "Other", tags: ["Icon 350877"] },
+      "36d8fa": { name: "Icon 36d8fa", category: "Other", tags: ["Icon 36d8fa"] },
+      "36e3f2": { name: "Icon 36e3f2", category: "Other", tags: ["Icon 36e3f2"] },
+      "39dcc8": { name: "Icon 39dcc8", category: "Other", tags: ["Icon 39dcc8"] },
+      "3d2fff": { name: "Icon 3d2fff", category: "Other", tags: ["Icon 3d2fff"] },
+      "3f684d": { name: "Icon 3f684d", category: "Other", tags: ["Icon 3f684d"] },
+      "490370": { name: "Icon 490370", category: "Other", tags: ["Icon 490370"] },
+      "4b6013": { name: "Icon 4b6013", category: "Other", tags: ["Icon 4b6013"] },
+      "4e1864": { name: "Icon 4e1864", category: "Other", tags: ["Icon 4e1864"] },
+      "51753c": { name: "Icon 51753c", category: "Other", tags: ["Icon 51753c"] },
+      "52bdce": { name: "Icon 52bdce", category: "Other", tags: ["Icon 52bdce"] },
+      "547df2": { name: "Icon 547df2", category: "Other", tags: ["Icon 547df2"] },
+      "54f145": { name: "Icon 54f145", category: "Other", tags: ["Icon 54f145"] },
+      "6eabdf": { name: "Icon 6eabdf", category: "Other", tags: ["Icon 6eabdf"] },
+      "71a046": { name: "Icon 71a046", category: "Other", tags: ["Icon 71a046"] },
+      "74cbae": { name: "Icon 74cbae", category: "Other", tags: ["Icon 74cbae"] },
+      "7abde7": { name: "Icon 7abde7", category: "Other", tags: ["Icon 7abde7"] },
+      "7ed513": { name: "Icon 7ed513", category: "Other", tags: ["Icon 7ed513"] },
+      "7eff44": { name: "Icon 7eff44", category: "Other", tags: ["Icon 7eff44"] },
+      "7f6536": { name: "Icon 7f6536", category: "Other", tags: ["Icon 7f6536"] },
+      "823528": { name: "Icon 823528", category: "Other", tags: ["Icon 823528"] },
+      "836f7a": { name: "Icon 836f7a", category: "Other", tags: ["Icon 836f7a"] },
+      "863841": { name: "Icon 863841", category: "Other", tags: ["Icon 863841"] },
+      "865db3": { name: "Icon 865db3", category: "Other", tags: ["Icon 865db3"] },
+      "86811d": { name: "Icon 86811d", category: "Other", tags: ["Icon 86811d"] },
+      "87687d": { name: "Icon 87687d", category: "Other", tags: ["Icon 87687d"] },
+      "89807c": { name: "Icon 89807c", category: "Other", tags: ["Icon 89807c"] },
+      "92c0d7": { name: "Icon 92c0d7", category: "Other", tags: ["Icon 92c0d7"] },
+      "93a043": { name: "Icon 93a043", category: "Other", tags: ["Icon 93a043"] },
+      "946e20": { name: "Icon 946e20", category: "Other", tags: ["Icon 946e20"] },
+      "9e0f78": { name: "Icon 9e0f78", category: "Other", tags: ["Icon 9e0f78"] },
+      "9f5f6f": { name: "Icon 9f5f6f", category: "Other", tags: ["Icon 9f5f6f"] },
+      "a1bba7": { name: "Icon a1bba7", category: "Other", tags: ["Icon a1bba7"] },
+      "a20836": { name: "Icon a20836", category: "Other", tags: ["Icon a20836"] },
+      "a32732": { name: "Icon a32732", category: "Other", tags: ["Icon a32732"] },
+      "a35cb5": { name: "Icon a35cb5", category: "Other", tags: ["Icon a35cb5"] },
+      "a35fbc": { name: "Icon a35fbc", category: "Other", tags: ["Icon a35fbc"] },
+      "a4763e": { name: "Icon a4763e", category: "Other", tags: ["Icon a4763e"] },
+      "a52240": { name: "Icon a52240", category: "Other", tags: ["Icon a52240"] },
+      "a54b3f": { name: "Icon a54b3f", category: "Other", tags: ["Icon a54b3f"] },
+      "a55dfb": { name: "Icon a55dfb", category: "Other", tags: ["Icon a55dfb"] },
+      "a5b9af": { name: "Icon a5b9af", category: "Other", tags: ["Icon a5b9af"] },
+      "a5db9a": { name: "Icon a5db9a", category: "Other", tags: ["Icon a5db9a"] },
+      "a5ed6c": { name: "Icon a5ed6c", category: "Other", tags: ["Icon a5ed6c"] },
+      "a5fb30": { name: "Icon a5fb30", category: "Other", tags: ["Icon a5fb30"] },
+      "a68d9b": { name: "Icon a68d9b", category: "Other", tags: ["Icon a68d9b"] },
+      "a9308d": { name: "Icon a9308d", category: "Other", tags: ["Icon a9308d"] },
+      "a93d00": { name: "Icon a93d00", category: "Other", tags: ["Icon a93d00"] },
+      "a9cb45": { name: "Icon a9cb45", category: "Other", tags: ["Icon a9cb45"] },
+      "a9e984": { name: "Icon a9e984", category: "Other", tags: ["Icon a9e984"] },
+      "aa2e8a": { name: "Icon aa2e8a", category: "Other", tags: ["Icon aa2e8a"] },
+      "ab0e8b": { name: "Icon ab0e8b", category: "Other", tags: ["Icon ab0e8b"] },
+      "abb4e6": { name: "Icon abb4e6", category: "Other", tags: ["Icon abb4e6"] },
+      "ac37b7": { name: "Icon ac37b7", category: "Other", tags: ["Icon ac37b7"] },
+      "aca4ae": { name: "Icon aca4ae", category: "Other", tags: ["Icon aca4ae"] },
+      "acfde3": { name: "Icon acfde3", category: "Other", tags: ["Icon acfde3"] },
+      "ad9f61": { name: "Icon ad9f61", category: "Other", tags: ["Icon ad9f61"] },
+      "af9260": { name: "Icon af9260", category: "Other", tags: ["Icon af9260"] },
+      "b06de3": { name: "Icon b06de3", category: "Other", tags: ["Icon b06de3"] },
+      "b11823": { name: "Icon b11823", category: "Other", tags: ["Icon b11823"] },
+      "b17b56": { name: "Icon b17b56", category: "Other", tags: ["Icon b17b56"] },
+      "b26965": { name: "Icon b26965", category: "Other", tags: ["Icon b26965"] },
+      "b2a555": { name: "Icon b2a555", category: "Other", tags: ["Icon b2a555"] },
+      "b2b0b8": { name: "Icon b2b0b8", category: "Other", tags: ["Icon b2b0b8"] },
+      "b52db3": { name: "Icon b52db3", category: "Other", tags: ["Icon b52db3"] },
+      "b5aa0b": { name: "Icon b5aa0b", category: "Other", tags: ["Icon b5aa0b"] },
+      "b624fa": { name: "Icon b624fa", category: "Other", tags: ["Icon b624fa"] },
+      "b6a09f": { name: "Icon b6a09f", category: "Other", tags: ["Icon b6a09f"] },
+      "b7a3ee": { name: "Icon b7a3ee", category: "Other", tags: ["Icon b7a3ee"] },
+      "b81341": { name: "Icon b81341", category: "Other", tags: ["Icon b81341"] },
+      "b834c9": { name: "Icon b834c9", category: "Other", tags: ["Icon b834c9"] },
+      "ba9b0d": { name: "Icon ba9b0d", category: "Other", tags: ["Icon ba9b0d"] },
+      "bbf3a9": { name: "Icon bbf3a9", category: "Other", tags: ["Icon bbf3a9"] },
+      "bc480f": { name: "Icon bc480f", category: "Other", tags: ["Icon bc480f"] },
+      "be4859": { name: "Icon be4859", category: "Other", tags: ["Icon be4859"] },
+      "c1b20a": { name: "Icon c1b20a", category: "Other", tags: ["Icon c1b20a"] },
+      "c1e6c4": { name: "Icon c1e6c4", category: "Other", tags: ["Icon c1e6c4"] },
+      "c2a895": { name: "Icon c2a895", category: "Other", tags: ["Icon c2a895"] },
+      "c31c21": { name: "Icon c31c21", category: "Other", tags: ["Icon c31c21"] },
+      "c42337": { name: "Icon c42337", category: "Other", tags: ["Icon c42337"] },
+      "c511c1": { name: "Icon c511c1", category: "Other", tags: ["Icon c511c1"] },
+      "c57a76": { name: "Icon c57a76", category: "Other", tags: ["Icon c57a76"] },
+      "c63066": { name: "Icon c63066", category: "Other", tags: ["Icon c63066"] },
+      "c6a95f": { name: "Icon c6a95f", category: "Other", tags: ["Icon c6a95f"] },
+      "c6db2f": { name: "Icon c6db2f", category: "Other", tags: ["Icon c6db2f"] },
+      "c7795b": { name: "Icon c7795b", category: "Other", tags: ["Icon c7795b"] },
+      "c7ea4d": { name: "Icon c7ea4d", category: "Other", tags: ["Icon c7ea4d"] },
+      "c8839f": { name: "Icon c8839f", category: "Other", tags: ["Icon c8839f"] },
+      "c93ee6": { name: "Icon c93ee6", category: "Other", tags: ["Icon c93ee6"] },
+      "c9d737": { name: "Icon c9d737", category: "Other", tags: ["Icon c9d737"] },
+      "cba78c": { name: "Icon cba78c", category: "Other", tags: ["Icon cba78c"] },
+      "cc931d": { name: "Icon cc931d", category: "Other", tags: ["Icon cc931d"] },
+      "ce3544": { name: "Icon ce3544", category: "Other", tags: ["Icon ce3544"] },
+      "ce58e5": { name: "Icon ce58e5", category: "Other", tags: ["Icon ce58e5"] },
+      "cf3864": { name: "Icon cf3864", category: "Other", tags: ["Icon cf3864"] },
+      "d019da": { name: "Icon d019da", category: "Other", tags: ["Icon d019da"] },
+      "d09e06": { name: "Icon d09e06", category: "Other", tags: ["Icon d09e06"] },
+      "d0e761": { name: "Icon d0e761", category: "Other", tags: ["Icon d0e761"] },
+      "d134c1": { name: "Icon d134c1", category: "Other", tags: ["Icon d134c1"] },
+      "d13764": { name: "Icon d13764", category: "Other", tags: ["Icon d13764"] },
+      "d2412b": { name: "Icon d2412b", category: "Other", tags: ["Icon d2412b"] },
+      "d28ccf": { name: "Icon d28ccf", category: "Other", tags: ["Icon d28ccf"] },
+      "d3152e": { name: "Icon d3152e", category: "Other", tags: ["Icon d3152e"] },
+      "d3876b": { name: "Icon d3876b", category: "Other", tags: ["Icon d3876b"] },
+      "d4bd76": { name: "Icon d4bd76", category: "Other", tags: ["Icon d4bd76"] },
+      "d66a94": { name: "Icon d66a94", category: "Other", tags: ["Icon d66a94"] },
+      "d6b1ab": { name: "Icon d6b1ab", category: "Other", tags: ["Icon d6b1ab"] },
+      "d6f274": { name: "Icon d6f274", category: "Other", tags: ["Icon d6f274"] },
+      "d74cb8": { name: "Icon d74cb8", category: "Other", tags: ["Icon d74cb8"] },
+      "d8dcbc": { name: "Icon d8dcbc", category: "Other", tags: ["Icon d8dcbc"] },
+      "d91eb5": { name: "Icon d91eb5", category: "Other", tags: ["Icon d91eb5"] },
+      "d9c78b": { name: "Icon d9c78b", category: "Other", tags: ["Icon d9c78b"] },
+      "d9d515": { name: "Icon d9d515", category: "Other", tags: ["Icon d9d515"] },
+      "e202fd": { name: "Icon e202fd", category: "Other", tags: ["Icon e202fd"] },
+      "e2d0e9": { name: "Icon e2d0e9", category: "Other", tags: ["Icon e2d0e9"] },
+      "e300c8": { name: "Icon e300c8", category: "Other", tags: ["Icon e300c8"] },
+      "e3af55": { name: "Icon e3af55", category: "Other", tags: ["Icon e3af55"] },
+      "e43eb6": { name: "Icon e43eb6", category: "Other", tags: ["Icon e43eb6"] },
+      "e45ab3": { name: "Icon e45ab3", category: "Other", tags: ["Icon e45ab3"] },
+      "e47eba": { name: "Icon e47eba", category: "Other", tags: ["Icon e47eba"] },
+      "e51fba": { name: "Icon e51fba", category: "Other", tags: ["Icon e51fba"] },
+      "e60167": { name: "Icon e60167", category: "Other", tags: ["Icon e60167"] },
+      "e6a16c": { name: "Icon e6a16c", category: "Other", tags: ["Icon e6a16c"] },
+      "e6c4c4": { name: "Icon e6c4c4", category: "Other", tags: ["Icon e6c4c4"] },
+      "e717cc": { name: "Icon e717cc", category: "Other", tags: ["Icon e717cc"] },
+      "e04414": { name: "alarm", category: "Other", tags: ["alarm"] },
+      "25e330": { name: "align-center", category: "Other", tags: ["align"] },
+      "25326d": { name: "align-left", category: "Other", tags: ["align"] },
+      "25eafd": { name: "align-right", category: "Other", tags: ["align"] },
+      "86dc94": { name: "brain", category: "Other", tags: ["brain"] },
+      "455a38": { name: "brain", category: "Other", tags: ["brain"] },
+      "dcac0b": { name: "cactus", category: "Other", tags: ["cactus"] },
+      "52bc20": { name: "cactus", category: "Other", tags: ["cactus"] },
+      "7258fc": { name: "checkbox-circle", category: "Other", tags: ["checkbox"] },
+      "30e002": { name: "close", category: "Other", tags: ["close"] },
+      "0ccbd9": { name: "cloud", category: "Other", tags: ["cloud"] },
+      "b30c2a": { name: "cup", category: "Other", tags: ["cup"] },
+      "c24a00": { name: "earth", category: "Other", tags: ["earth"] },
+      "554074": { name: "earth", category: "Other", tags: ["earth"] },
+      "306b75": { name: "emoji-happy", category: "Other", tags: ["emoji"] },
+      "fec800": { name: "flash", category: "Other", tags: ["flash"] },
+      "407870": { name: "flashlight", category: "Other", tags: ["flashlight"] },
+      "f5c817": { name: "flashlight", category: "Other", tags: ["flashlight"] },
+      "de2679": { name: "flask", category: "Other", tags: ["flask"] },
+      "6d3f20": { name: "heart", category: "Other", tags: ["heart"] },
+      "ba3792": { name: "medal", category: "Other", tags: ["medal"] },
+      "143e56": { name: "moon", category: "Other", tags: ["moon"] },
+      "4944fe": { name: "sun", category: "Other", tags: ["sun", "brightness", "light"] },
+      "127a53": { name: "sun", category: "Other", tags: ["sun"] },
+      "498a9e": { name: "sun", category: "Other", tags: ["sun", "brightness", "light"] },
+      "6e01b5": { name: "team", category: "Other", tags: ["team"] },
+      "712359": { name: "upload", category: "Other", tags: ["cloud"] },
+    };
+
+    const categoryOrder = ["UI", "Social", "Media", "System", "Business", "Other"];
+
+    function initTheme () {
+      const saved = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+      updateThemeIcon(saved);
+
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateThemeIcon(next);
+      });
+    }
+
+    function updateThemeIcon (theme) {
+      const iconNode = document.getElementById('theme-icon');
+      if (theme === 'dark') {
+        iconNode.innerHTML = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+      } else {
+        iconNode.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+      }
+    }
+
+    async function init () {
+      initTheme();
+      try {
+        const response = await fetch('sprites.svg');
+        const svgText = await response.text();
+        const container = document.getElementById('sprites-container');
+        container.innerHTML = svgText;
+
+        const symbols = Array.from(container.querySelectorAll('symbol'));
+
+        allIcons = symbols.map(symbol => {
+          const id = symbol.getAttribute('id');
+          const meta = iconMetadata[id] || { name: `Icon ${id}`, category: "Other", tags: [] };
+          return {
+            id: id,
+            name: meta.name,
+            category: meta.category || "Others",
+            viewBox: symbol.getAttribute('viewBox') || '0 0 20 20',
+            fillRule: symbol.getAttribute('fill-rule') || '',
+            clipRule: symbol.getAttribute('clip-rule') || '',
+            tags: meta.tags || [],
+            node: symbol
+          };
+        });
+
+        renderCategorizedGrid(allIcons);
+
+        const searchInput = document.getElementById('search');
+        const clearBtn = document.getElementById('clear-search');
+
+        // Global Command+K / Ctrl+K shortcut
+        document.addEventListener('keydown', (e) => {
+          if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            searchInput.focus();
+          }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          clearBtn.style.display = query ? 'block' : 'none';
+
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            const scores = new Map();
+
+            const filtered = allIcons.filter(icon => {
+              if (!query) return true;
+
+              let score = 0;
+              const nameMatch = icon.name.toLowerCase().includes(query);
+              const idMatch = icon.id.toLowerCase().includes(query);
+              const catMatch = icon.category.toLowerCase().includes(query);
+              const tagMatch = icon.tags.some(tag => tag.toLowerCase().includes(query));
+
+              if (nameMatch) score += 10;
+              if (idMatch) score += 5;
+              if (catMatch) score += 3;
+              if (tagMatch) score += 1;
+
+              if (score > 0) {
+                scores.set(icon.id, score);
+                return true;
+              }
+              return false;
+            }).sort((a, b) => {
+              if (!query) return 0;
+              return scores.get(b.id) - scores.get(a.id);
+            });
+
+            renderCategorizedGrid(filtered);
+          }, 50);
+        });
+
+        clearBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          clearBtn.style.display = 'none';
+          renderCategorizedGrid(allIcons);
+          searchInput.focus();
+        });
+
+        // Sticky Header shadow effect
+        window.addEventListener('scroll', () => {
+          const headers = document.querySelectorAll('.category-header');
+          headers.forEach(header => {
+            const rect = header.getBoundingClientRect();
+            if (rect.top <= 52) {
+              header.classList.add('sticky');
+            } else {
+              header.classList.remove('sticky');
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error('Init error:', error);
+      }
+    }
+
+    /* Popover Logic */
+    let currentIconData = null;
+    let currentColor = 'currentColor';
+    let popover = null;
+    let activeCard = null;
+
+    function initPopover () {
+      popover = document.getElementById('icon-popover');
+      const colorOptions = document.getElementById('popover-color-options');
+      const customColorInput = document.getElementById('popover-custom-color');
+      const copyBtn = document.getElementById('popover-btn-copy');
+      const svgBtn = document.getElementById('popover-btn-svg');
+      const pngBtn = document.getElementById('popover-btn-png');
+
+      // Colors
+      colorOptions.addEventListener('click', (e) => {
+        if (e.target.classList.contains('color-btn')) {
+          setActiveColor(e.target.dataset.color, e.target);
+        }
+      });
+
+      customColorInput.addEventListener('input', (e) => {
+        setActiveColor(e.target.value, null);
+      });
+
+      // Actions
+      copyBtn.addEventListener('click', () => {
+        if (!currentIconData) return;
+        const svgCode = getSvgCode(currentIconData, currentColor);
+        copyToClipboard(svgCode);
+        closePopover();
+      });
+
+      svgBtn.addEventListener('click', () => {
+        if (!currentIconData) return;
+        downloadSvg(currentIconData, currentColor);
+      });
+
+      pngBtn.addEventListener('click', () => {
+        if (!currentIconData) return;
+        downloadPng(currentIconData, currentColor);
+      });
+
+      // Close Logic (Click Outside)
+      document.addEventListener('click', (e) => {
+        // If clicking inside popover or on the active card, ignore
+        if (popover.contains(e.target)) return;
+        if (activeCard && activeCard.contains(e.target)) return;
+
+        closePopover();
+      });
+
+      // Escape key to close
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closePopover();
+      });
+
+      // Expose open function
+      window.openIconModal = (icon, cardElement) => {
+        // If clicking same card, toggle close
+        if (activeCard === cardElement) {
+          closePopover();
+          return;
+        }
+
+        currentIconData = icon;
+        currentColor = 'currentColor';
+        activeCard = cardElement;
+
+        // Reset UI
+        // Header removed
+
+        // Reset colors
+        document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.color-btn[data-color="currentColor"]').classList.add('active');
+
+        // Add active class to card
+        document.querySelectorAll('.icon-card').forEach(c => c.classList.remove('active'));
+        cardElement.classList.add('active');
+
+        // Position Popover
+        const rect = cardElement.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+        const popoverWidth = 240; // Match CSS width
+        const popoverHeight = 150; // Approximate height
+        const gap = 12;
+
+        // Calculate ideal centered position
+        let top = rect.bottom + scrollTop + gap;
+        let left = rect.left + scrollLeft + (rect.width / 2) - (popoverWidth / 2);
+
+        // Boundary detection - prevent horizontal cutoff
+        const viewportWidth = window.innerWidth;
+        const minLeft = 16; // Minimum padding from edge
+        const maxLeft = viewportWidth - popoverWidth - 16;
+
+        if (left < minLeft) {
+          left = minLeft;
+        } else if (left > maxLeft) {
+          left = maxLeft;
+        }
+
+        // Adjust arrow position if popover was shifted
+        const arrowOffset = (rect.left + scrollLeft + rect.width / 2) - (left + popoverWidth / 2);
+        popover.style.setProperty('--arrow-offset', `${arrowOffset}px`);
+
+        popover.style.top = `${top}px`;
+        popover.style.left = `${left}px`;
+
+        popover.style.display = 'flex';
+        // Force reflow
+        void popover.offsetWidth;
+        popover.classList.add('show');
+      };
+    }
+
+    function closePopover () {
+      if (popover) {
+        popover.classList.remove('show');
+
+        // Reset Card Preview on Close (Optional: user might want it to persist?
+        // Usually preview implies distinct state. Let's reset for now to keep grid clean)
+        if (activeCard) {
+          const iconWrapper = activeCard.querySelector('.icon-wrapper');
+          const iconSvg = activeCard.querySelector('svg');
+          if (iconWrapper && iconSvg) {
+            iconWrapper.style.color = '';
+            iconSvg.style.fill = 'currentColor';
+            iconWrapper.style.backgroundColor = '';
+            iconWrapper.style.borderRadius = '';
+          }
+        }
+      }
+
+      if (activeCard) activeCard.classList.remove('active');
+      activeCard = null;
+      setTimeout(() => {
+        // Double check activeCard is null before hiding (avoid race conditions)
+        // Actually if we just opened another one, activeCard wouldn't be null.
+        // The close logic needs to be careful.
+        if (!activeCard) popover.style.display = 'none';
+      }, 200);
+    }
+
+    function setActiveColor (color, btnElement) {
+      currentColor = color;
+
+      // Update UI
+      if (btnElement) {
+        document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+      } else {
+        document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+      }
+
+      // Live Preview on Card
+      if (activeCard) {
+        const iconWrapper = activeCard.querySelector('.icon-wrapper');
+        const iconSvg = activeCard.querySelector('svg');
+        if (iconWrapper && iconSvg) {
+          if (color === 'currentColor') {
+            iconWrapper.style.color = '';
+            iconSvg.style.fill = 'currentColor';
+            iconWrapper.style.backgroundColor = '';
+            iconWrapper.style.borderRadius = '';
+          } else {
+            iconWrapper.style.color = color;
+            iconSvg.style.fill = color;
+
+            // Special handling for White and Black colors
+            const lowerColor = color.toLowerCase();
+            if (lowerColor === '#ffffff' || lowerColor === '#fff' || lowerColor === 'white') {
+              // White icon on dark background
+              iconWrapper.style.backgroundColor = '#000000';
+              iconWrapper.style.borderRadius = '8px';
+            } else if (lowerColor === '#000000' || lowerColor === '#000' || lowerColor === 'black') {
+              // Black icon on light background
+              iconWrapper.style.backgroundColor = '#ffffff';
+              iconWrapper.style.borderRadius = '8px';
+            } else {
+              iconWrapper.style.backgroundColor = '';
+              iconWrapper.style.borderRadius = '';
+            }
+          }
+        }
+      }
+    }
+
+    function getSvgCode (icon, color) {
+      const colorAttr = color === 'currentColor' ? 'fill="currentColor"' : `fill="${color}"`;
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${icon.viewBox}" ${icon.fillRule ? `fill-rule="${icon.fillRule}"` : ''} ${icon.clipRule ? `clip-rule="${icon.clipRule}"` : ''} width="32" height="32" ${colorAttr}>${icon.node.innerHTML}</svg>`;
+    }
+
+    function downloadSvg (icon, color) {
+      const svgCode = getSvgCode(icon, color);
+      const blob = new Blob([svgCode], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${icon.name}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadPng (icon, color) {
+      const size = 512;
+      const svgCode = getSvgCode(icon, color);
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      const svgBlob = new Blob([svgCode], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      img.onload = function () {
+        ctx.drawImage(img, 0, 0, size, size);
+        const pngUrl = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = pngUrl;
+        a.download = `${icon.name}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    }
+
+    // Initialize popover on load
+    initPopover();
+
+    function renderCategorizedGrid (icons) {
+      const mainContent = document.getElementById('main-content');
+      mainContent.innerHTML = '';
+
+      if (icons.length === 0) {
+        mainContent.innerHTML = `<div class="no-results">No icons found</div>`;
+        return;
+      }
+
+      // Grouping icons
+      const groups = {};
+      icons.forEach(icon => {
+        if (!groups[icon.category]) groups[icon.category] = [];
+        groups[icon.category].push(icon);
+      });
+
+      // Sorting Categories
+      const sortedCategories = categoryOrder.filter(cat => groups[cat]);
+      // Catch any categories not in order
+      Object.keys(groups).forEach(cat => {
+        if (!sortedCategories.includes(cat)) sortedCategories.push(cat);
+      });
+
+      sortedCategories.forEach(cat => {
+        const groupIcons = groups[cat];
+        const section = document.createElement('section');
+        section.className = 'category-section';
+
+        const header = document.createElement('div');
+        header.className = 'category-header';
+        header.innerHTML = `
+           <h2 class="category-title">${cat}</h2>
+           <span class="category-count">${groupIcons.length}</span>
+         `;
+
+        const grid = document.createElement('div');
+        grid.className = 'icon-grid';
+
+        groupIcons.forEach(icon => {
+          const card = document.createElement('div');
+          card.className = 'icon-card';
+          card.innerHTML = `
+             <div class="icon-wrapper">
+               <svg viewBox="${icon.viewBox}" ${icon.fillRule ? `fill-rule="${icon.fillRule}"` : ''} ${icon.clipRule ? `clip-rule="${icon.clipRule}"` : ''}>
+                 <use xlink:href="#${icon.id}"></use>
+               </svg>
+             </div>
+             <div class="icon-name">${icon.name}</div>
+           `;
+
+          // Update Click Handler to Open Modal
+          card.addEventListener('click', () => {
+            window.openIconModal(icon, card);
+          });
+          grid.appendChild(card);
+        });
+
+        section.appendChild(header);
+        section.appendChild(grid);
+        mainContent.appendChild(section);
+      });
+    }
+
+    function copyToClipboard (text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      });
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
