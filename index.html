@@ -25,7 +25,7 @@
       --navbar-height: 64px;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
       --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.12);
-      --text-meta: 13px;
+      --text-meta: 14px;
       --text-body: 15px;
       --text-lede: 16px;
       --text-title: 21px;
@@ -644,7 +644,13 @@
       .no-results { font-size: 0.95rem; }
       .popover-btn { font-size: 0.8rem; }
     }
-  </style>
+  
+/* Meta is 14px on desktop (maintainer 2026-11-01: 13 read small beside the
+   hero's tagline); phones keep the 13px meta of their own ladder. */
+@media (max-width: 640px) {
+  :root { --text-meta: 13px; }
+}
+</style>
 </head>
 
 <body>
