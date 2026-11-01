@@ -368,6 +368,24 @@
       display: none;
     }
 
+    .icon-label {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Repeated names keep the name whole and show which grid size this one is. */
+    .icon-variant {
+      /* Out of flow, so these cards keep the icon on the same line as their neighbours. */
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      font-size: 0.6875rem;
+      color: var(--text-sub);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
     /* Toast Styling */
     .toast {
       position: fixed;
@@ -1267,9 +1285,11 @@
           if (nameCount[icon.name] < 2) return;
           const sized = `${icon.name}-${icon.size}`;
           icon.label = sized;
+          icon.variant = `${icon.size}px`;
           if (sizedCount[sized] > 1) {
             sizedSeen[sized] = (sizedSeen[sized] || 0) + 1;
             icon.label = `${sized}-${sizedSeen[sized]}`;
+            icon.variant += ` · ${sizedSeen[sized]}`;
           }
         });
 
@@ -1633,7 +1653,10 @@
                  <use xlink:href="#${icon.id}"></use>
                </svg>
              </div>
-             <div class="icon-name">${icon.label}</div>
+             <div class="icon-label">
+               <div class="icon-name">${icon.name}</div>
+               ${icon.variant ? `<div class="icon-variant">${icon.variant}</div>` : ''}
+             </div>
            `;
 
           // Update Click Handler to Open Modal
