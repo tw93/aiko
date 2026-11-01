@@ -1253,6 +1253,26 @@
           };
         });
 
+        // A name shared by several symbols gets its grid size, and a number when
+        // the size repeats too; symbol ids and search names stay as they are.
+        const nameCount = {}, sizedCount = {}, sizedSeen = {};
+        allIcons.forEach(icon => {
+          icon.size = icon.viewBox.split(/\s+/)[2];
+          const sized = `${icon.name}-${icon.size}`;
+          nameCount[icon.name] = (nameCount[icon.name] || 0) + 1;
+          sizedCount[sized] = (sizedCount[sized] || 0) + 1;
+        });
+        allIcons.forEach(icon => {
+          icon.label = icon.name;
+          if (nameCount[icon.name] < 2) return;
+          const sized = `${icon.name}-${icon.size}`;
+          icon.label = sized;
+          if (sizedCount[sized] > 1) {
+            sizedSeen[sized] = (sizedSeen[sized] || 0) + 1;
+            icon.label = `${sized}-${sizedSeen[sized]}`;
+          }
+        });
+
         renderCategorizedGrid(allIcons);
 
         const searchInput = document.getElementById('search');
@@ -1531,7 +1551,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${icon.name}.svg`;
+      a.download = `${icon.label || icon.name}.svg`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1554,7 +1574,7 @@
         const pngUrl = canvas.toDataURL('image/png');
         const a = document.createElement('a');
         a.href = pngUrl;
-        a.download = `${icon.name}.png`;
+        a.download = `${icon.label || icon.name}.png`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1613,7 +1633,7 @@
                  <use xlink:href="#${icon.id}"></use>
                </svg>
              </div>
-             <div class="icon-name">${icon.name}</div>
+             <div class="icon-name">${icon.label}</div>
            `;
 
           // Update Click Handler to Open Modal
