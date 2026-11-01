@@ -410,8 +410,10 @@
       font-size: 0.85rem;
       font-weight: 500;
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      transform: translateY(100px);
-      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
       z-index: 3000;
       display: flex;
       align-items: center;
@@ -419,7 +421,8 @@
     }
 
     .toast.show {
-      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
     }
 
     #sprites-container {
@@ -504,8 +507,7 @@
       flex-direction: column;
       gap: 16px;
       opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition: opacity 0.2s ease;
     }
 
     [data-theme="dark"] .popover {
@@ -515,7 +517,6 @@
     .popover.show {
       display: flex;
       opacity: 1;
-      transform: translateY(0);
     }
 
     /* Arrow for popover - Removed border, just bg */
