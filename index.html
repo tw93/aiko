@@ -23,6 +23,7 @@
       --card-hover: #f7f7f8;
       --navbar-height: 64px;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.12);
     }
 
     [data-theme="dark"] {
@@ -308,7 +309,6 @@
       cursor: pointer;
       transition: color 0.12s ease-out, background-color 0.12s ease-out, border-color 0.12s ease-out, box-shadow 0.12s ease-out, opacity 0.12s ease-out;
       position: relative;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     /* Dark mode border adjustment - Removed */
@@ -317,37 +317,18 @@
     } */
 
     .icon-card:hover {
-      background: var(--bg-primary);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      background: var(--card-hover);
     }
 
     .icon-card.active {
       background: var(--bg-primary);
-      box-shadow: 0 0 0 2px var(--accent), 0 6px 16px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0 0 2px var(--accent);
       z-index: 2;
-    }
-
-    /* Dark mode shadow adjustments */
-    [data-theme="dark"] .icon-card {
-      background: var(--bg-primary);
-      border: none;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    [data-theme="dark"] .icon-card:hover {
-      background: var(--bg-primary);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    }
-
-    [data-theme="dark"] .icon-card.active {
-      background: var(--bg-primary);
-      box-shadow: 0 0 0 2px var(--accent), 0 3px 8px rgba(0, 0, 0, 0.4);
     }
 
     [data-theme="dark"] .popover {
       background: #161616;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.8);
     }
 
     .icon-wrapper {
@@ -398,7 +379,7 @@
       border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 500;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-float);
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -487,7 +468,7 @@
     .popover {
       position: absolute;
       background: var(--bg-primary);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      box-shadow: var(--shadow-float);
       border-radius: 16px;
       padding: 16px;
       width: 240px;
@@ -497,10 +478,6 @@
       gap: 16px;
       opacity: 0;
       transition: opacity 0.2s ease;
-    }
-
-    [data-theme="dark"] .popover {
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
     }
 
     .popover.show {
