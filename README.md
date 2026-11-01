@@ -10,7 +10,7 @@
 
 <p align="center">
     <a href="https://x.com/HiTw93" target="_blank">
-    <img alt="twitter" src="https://img.shields.io/badge/follow-Tw93-red?style=flat-square&logo=Twitter"></a>
+    <img alt="twitter" src="https://img.shields.io/badge/follow-Tw93-red?style=flat-square&logo=x"></a>
     <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" />
     <img alt="Style" src="https://img.shields.io/badge/style-minimal-black.svg?style=flat-square" />
 </p>
