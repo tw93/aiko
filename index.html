@@ -25,6 +25,11 @@
       --navbar-height: 64px;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
       --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --text-meta: 13px;
+      --text-body: 15px;
+      --text-lede: 16px;
+      --text-title: 21px;
+      --text-section: 32px;
     }
 
     [data-theme="dark"] {
@@ -98,7 +103,7 @@
 
     .brand {
       font-family: 'Outfit', sans-serif;
-      font-size: 20px;
+      font-size: var(--text-title);
       font-weight: 700;
       color: var(--text-main);
       display: flex;
@@ -114,7 +119,7 @@
     }
 
     .subtitle {
-      font-size: 13px;
+      font-size: var(--text-meta);
       font-weight: 300;
       color: var(--text-sub);
       margin-left: 20px;
@@ -129,7 +134,7 @@
       padding: 2rem 3rem 3rem;
       text-align: center;
       color: var(--text-sub);
-      font-size: 12px;
+      font-size: var(--text-meta);
       opacity: 0.6;
       font-weight: 300;
     }
@@ -177,7 +182,7 @@
       /* Border removed */
       background: var(--bg-secondary);
       color: var(--text-main);
-      font-size: 14px;
+      font-size: var(--text-body);
       transition: color 0.12s ease-out, background-color 0.12s ease-out, border-color 0.12s ease-out, box-shadow 0.12s ease-out, opacity 0.12s ease-out;
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
     }
@@ -277,7 +282,7 @@
     }
 
     .category-title {
-      font-size: 1rem;
+      font-size: var(--text-lede);
       font-weight: 600;
       color: var(--text-main);
       text-transform: capitalize;
@@ -285,7 +290,7 @@
     }
 
     .category-count {
-      font-size: 0.75rem;
+      font-size: var(--text-meta);
       color: var(--text-sub);
       background: var(--card-hover);
       padding: 2px 8px;
@@ -354,7 +359,7 @@
     }
 
     .icon-name {
-      font-size: 0.75rem;
+      font-size: var(--text-meta);
       font-weight: 500;
       color: var(--text-main);
       text-align: center;
@@ -381,7 +386,7 @@
       left: 0;
       right: 0;
       top: 100%;
-      font-size: 0.6875rem;
+      font-size: var(--text-meta);
       color: var(--text-sub);
       text-align: center;
       font-variant-numeric: tabular-nums;
@@ -396,7 +401,7 @@
       color: #ffffff;
       padding: 0.75rem 1rem;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: var(--text-meta);
       font-weight: 500;
       box-shadow: var(--shadow-float);
       opacity: 0;
@@ -422,7 +427,7 @@
       text-align: center;
       padding: 6rem;
       color: var(--text-sub);
-      font-size: 0.95rem;
+      font-size: var(--text-body);
       width: 100%;
     }
 
@@ -443,10 +448,6 @@
       .nav-left {
         flex: 1;
         /* Take available space */
-      }
-
-      .brand {
-        font-size: 18px;
       }
 
       .brand svg {
@@ -530,7 +531,7 @@
       height: 32px;
       border: none;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: var(--text-body);
       font-weight: 600;
       cursor: pointer;
       transition: color 0.12s ease-out, background-color 0.12s ease-out, border-color 0.12s ease-out, box-shadow 0.12s ease-out, opacity 0.12s ease-out;
@@ -629,6 +630,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    /* Phones keep their pre-ladder sizes (desktop ladder applies above 640px). */
+    @media (max-width: 640px) {
+      .brand { font-size: 18px; }
+      footer { font-size: 12px; }
+      .nav-search { font-size: 14px; }
+      .category-title { font-size: 1rem; }
+      .category-count, .icon-name { font-size: 0.75rem; }
+      .icon-variant { font-size: 0.6875rem; }
+      .toast { font-size: 0.85rem; }
+      .no-results { font-size: 0.95rem; }
+      .popover-btn { font-size: 0.8rem; }
     }
   </style>
 </head>
