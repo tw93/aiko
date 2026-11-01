@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-    <a href="https://twitter.com/HiTw93" target="_blank">
+    <a href="https://x.com/HiTw93" target="_blank">
     <img alt="twitter" src="https://img.shields.io/badge/follow-Tw93-red?style=flat-square&logo=Twitter"></a>
     <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" />
     <img alt="Style" src="https://img.shields.io/badge/style-minimal-black.svg?style=flat-square" />
@@ -52,7 +52,7 @@ Inspired by OpenAI's original icon assets.
 <a href="https://miaoyan.app/cats.html?name=Aiko"><img src="https://miaoyan.app/assets/sponsors.svg" width="1000px" /></a>
 
 1. I have two cats, TangYuan and Coke. If you think Aiko delights your life, you can feed them [food](https://miaoyan.app/cats.html?name=Aiko).
-2. If you like Aiko, you can star it on GitHub. Also, welcome to follow my [Twitter](https://twitter.com/HiTw93) to get the latest news.
+2. If you like Aiko, you can star it on GitHub. Also, welcome to follow my [Twitter](https://x.com/HiTw93) to get the latest news.
 
 ## License
 
